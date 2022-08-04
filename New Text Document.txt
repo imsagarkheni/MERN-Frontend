@@ -1,0 +1,22 @@
+router.post("/register", async (req,res)=>{
+    console.log(req.body);
+    const { name, email, phone, work, password, cpassword } = req.body
+    try {
+     const userExist  = await userSchema.findOne({email:email});
+
+     if (userExist){
+        return res.status(422).json({error:"Email Already Exist"});
+      }else if(password != cpassword){
+        return res.status(422).json({error:"Password are Not Matching"});
+      }else{
+        const user = new userSchema({name, email, phone, work, password,cpassword});
+        // hash bcryption       
+               await user.save();    
+               res.status(201).json({message:"User Resister successfully"})
+      }
+
+     
+    } catch (err) {
+        console.log(err)
+    }
+});
